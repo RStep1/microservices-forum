@@ -1,7 +1,6 @@
 package com.rstep.user_service.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,11 +24,5 @@ public class UserController {
     public ResponseEntity<UserRegistryDto> createUser(@RequestBody UserRegistryDto request) {
         log.info("Creating user with {}", request.toString());
         return ResponseEntity.ok(userService.registerUser(request));
-    }
-
-    @GetMapping("/ping")
-    public String ping() {  
-        log.info("Ping endpoint hit");
-        return "pong";
     }
 }

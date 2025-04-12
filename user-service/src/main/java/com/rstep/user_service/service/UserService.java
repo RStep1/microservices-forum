@@ -1,6 +1,6 @@
 package com.rstep.user_service.service;
 
-// import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.rstep.user_service.dto.UserRegistryDto;
@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    // private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     public UserRegistryDto registerUser(UserRegistryDto userRegistryDto) {
 
@@ -34,9 +34,9 @@ public class UserService {
         User user = new User();
         user.setUsername(userRegistryDto.username());
         user.setEmail(userRegistryDto.email());
-        // user.setPassword(passwordEncoder.encode(userRegistryDto.password()));
-        user.setPassword(userRegistryDto.password());
+        user.setPassword(passwordEncoder.encode(userRegistryDto.password()));
 
+        log.info("Perform user registration");
         return UserRegistryDto.from(userRepository.save(user));
     }
 }
