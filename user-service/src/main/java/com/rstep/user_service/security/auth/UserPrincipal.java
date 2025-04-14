@@ -1,4 +1,4 @@
-package com.rstep.user_service.model;
+package com.rstep.user_service.security.auth;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -6,6 +6,8 @@ import java.util.Collections;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.rstep.user_service.model.User;
 
 import lombok.RequiredArgsConstructor;
 

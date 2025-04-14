@@ -1,4 +1,4 @@
-package com.rstep.user_service.service;
+package com.rstep.user_service.security.service;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -6,8 +6,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.rstep.user_service.model.User;
-import com.rstep.user_service.model.UserPrincipal;
 import com.rstep.user_service.repository.UserRepository;
+import com.rstep.user_service.security.auth.UserPrincipal;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
