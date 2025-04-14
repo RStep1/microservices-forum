@@ -2,6 +2,7 @@ package com.rstep.user_service.service;
 
 import java.util.List;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,8 +14,11 @@ import com.rstep.user_service.dto.UserDto;
 import com.rstep.user_service.dto.auth.UserCredentialDto;
 import com.rstep.user_service.dto.auth.UserRegistrationRequest;
 import com.rstep.user_service.exception.AuthenticationFailedException;
+import com.rstep.user_service.exception.DataConflictException;
+import com.rstep.user_service.exception.EmailExistsException;
 import com.rstep.user_service.exception.IncorrectEmailException;
 import com.rstep.user_service.exception.IncorrectUsernameException;
+import com.rstep.user_service.exception.ServiceException;
 import com.rstep.user_service.model.User;
 import com.rstep.user_service.repository.UserRepository;
 import com.rstep.user_service.security.jwt.JWTService;
@@ -77,10 +81,28 @@ public class UserService {
     }
 
     public UserDto updateUserProfile(Long id, UpdateUserProfileRequest request) {
-        User user = userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        User user = userRepository.findById(id)
+            .orElseThrow(() -> {
+                log.error("User not found with id: {}", id);
+                return new EntityNotFoundException("User not found with id: " + id);
+            });
         
-        user.setEmail(request.email());
-
-        return UserDto.from(userRepository.save(user));
+        if (!user.getEmail().equals(request.email())) {
+            if (userRepository.existsByEmail(request.email())) {
+                log.error("Duplicate email detected: {}", request.email());
+                throw new EmailExistsException("Email '" + request.email() + "' is already in use");
+            }
+        }
+        
+        try {
+            user.setEmail(request.email());
+            return UserDto.from(userRepository.save(user));
+        } catch (DataIntegrityViolationException e) {
+            log.error("Data integrity violation while updating user {}: {}", id, e.getMessage());
+            throw new DataConflictException("Failed to update user due to data conflict", e);
+        } catch (Exception e) {
+            log.error("Unexpected error updating user {}: {}", id, e.getMessage());
+            throw new ServiceException("Failed to update user profile", e);
+        }
     }
 }
