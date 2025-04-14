@@ -3,6 +3,7 @@ package com.rstep.user_service.model;
 import lombok.Getter;
 import lombok.Setter;
 import jakarta.persistence.Table;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

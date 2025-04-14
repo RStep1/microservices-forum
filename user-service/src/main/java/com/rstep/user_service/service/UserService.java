@@ -8,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.rstep.user_service.dto.UpdateUserProfileRequest;
 import com.rstep.user_service.dto.UserDto;
 import com.rstep.user_service.dto.auth.UserCredentialDto;
 import com.rstep.user_service.dto.auth.UserRegistrationRequest;
@@ -75,4 +76,11 @@ public class UserService {
         return userRepository.findAll().stream().map(user -> UserDto.from(user)).toList();
     }
 
+    public UserDto updateUserProfile(Long id, UpdateUserProfileRequest request) {
+        User user = userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        
+        user.setEmail(request.email());
+
+        return UserDto.from(userRepository.save(user));
+    }
 }
