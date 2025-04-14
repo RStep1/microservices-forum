@@ -1,14 +1,18 @@
 package com.rstep.user_service.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rstep.user_service.dto.ErrorResponse;
+import com.rstep.user_service.dto.UserDto;
 import com.rstep.user_service.dto.auth.JWTAuthenticationResponse;
 import com.rstep.user_service.dto.auth.UserCredentialDto;
 import com.rstep.user_service.dto.auth.UserRegistrationRequest;
@@ -50,8 +54,16 @@ public class UserController {
         }
     }
 
-    @GetMapping(value = "/ping")
-    public String ping() {
-        return "pong";
+    @GetMapping(value = "/user/{id}")
+    public ResponseEntity<UserDto> readUser(@PathVariable("id") Long id) {
+        log.info("Reading user by id {}", id);
+        return ResponseEntity.ok(userService.readUser(id));
     }
+
+    @GetMapping(value = "/users")
+    public ResponseEntity<List<UserDto>> readUsers() {
+        log.info("Reading all users");
+        return ResponseEntity.ok(userService.readUsers());
+    }
+
 }

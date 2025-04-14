@@ -1,14 +1,16 @@
 package com.rstep.user_service.service;
 
+import java.util.List;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.rstep.user_service.dto.UserDto;
 import com.rstep.user_service.dto.auth.UserCredentialDto;
 import com.rstep.user_service.dto.auth.UserRegistrationRequest;
-import com.rstep.user_service.dto.auth.UserRegistrationResponse;
 import com.rstep.user_service.exception.AuthenticationFailedException;
 import com.rstep.user_service.exception.IncorrectEmailException;
 import com.rstep.user_service.exception.IncorrectUsernameException;
@@ -16,6 +18,7 @@ import com.rstep.user_service.model.User;
 import com.rstep.user_service.repository.UserRepository;
 import com.rstep.user_service.security.jwt.JWTService;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,7 +31,7 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
     private final JWTService jwtService;
 
-    public UserRegistrationResponse registerUser(UserRegistrationRequest request) {
+    public UserDto registerUser(UserRegistrationRequest request) {
 
         if (userRepository.existsByUsername(request.username())) {
             log.error("Trying to register user with existing username");
@@ -46,7 +49,7 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(request.password()));
 
         log.info("Perform user registration");
-        return UserRegistrationResponse.from(userRepository.save(user));
+        return UserDto.from(userRepository.save(user));
     }
 
     public String verify(UserCredentialDto userCredential) {
@@ -62,4 +65,14 @@ public class UserService {
             throw new AuthenticationFailedException("Authentication failed");
         }
     }
+
+    public UserDto readUser(Long id) {
+        User user = userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        return UserDto.from(user);
+    }
+
+    public List<UserDto> readUsers() {
+        return userRepository.findAll().stream().map(user -> UserDto.from(user)).toList();
+    }
+
 }
