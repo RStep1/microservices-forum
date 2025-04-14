@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -69,11 +70,12 @@ public class UserController {
     }
 
     @PutMapping(value = "/user/{id}")
+    @PreAuthorize("#id == principal.id")
     public ResponseEntity<UserDto> updateUserProfile(
                 @PathVariable("id") Long id,
                 @RequestBody UpdateUserProfileRequest request
             ) {
-        log.info("Updating user with {}", request.toString());
+        log.info("Updating user profile with {}", request.toString());
         return ResponseEntity.ok(userService.updateUserProfile(id, request));
     }
 }
