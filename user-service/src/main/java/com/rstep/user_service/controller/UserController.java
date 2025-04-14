@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -77,5 +78,13 @@ public class UserController {
             ) {
         log.info("Updating user profile with {}", request.toString());
         return ResponseEntity.ok(userService.updateUserProfile(id, request));
+    }
+
+    @DeleteMapping(value = "/users/{id}")
+    @PreAuthorize("#id == principal.id")
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id) {
+        log.info("Deleting user profile with id {}", id);
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
     }
 }
