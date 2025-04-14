@@ -57,7 +57,7 @@ public class UserController {
         }
     }
 
-    @GetMapping(value = "/user/{id}")
+    @GetMapping(value = "/users/{id}")
     public ResponseEntity<UserDto> readUser(@PathVariable("id") Long id) {
         log.info("Reading user by id {}", id);
         return ResponseEntity.ok(userService.readUser(id));
@@ -69,7 +69,7 @@ public class UserController {
         return ResponseEntity.ok(userService.readUsers());
     }
 
-    @PutMapping(value = "/user/{id}")
+    @PutMapping(value = "/users/{id}")
     @PreAuthorize("#id == principal.id")
     public ResponseEntity<UserDto> updateUserProfile(
                 @PathVariable("id") Long id,
