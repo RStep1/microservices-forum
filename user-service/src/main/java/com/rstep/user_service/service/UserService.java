@@ -6,8 +6,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.rstep.user_service.dto.UserCredentialDto;
-import com.rstep.user_service.dto.UserRegistryDto;
+import com.rstep.user_service.dto.auth.UserCredentialDto;
+import com.rstep.user_service.dto.auth.UserRegistrationRequest;
+import com.rstep.user_service.dto.auth.UserRegistrationResponse;
 import com.rstep.user_service.exception.AuthenticationFailedException;
 import com.rstep.user_service.exception.IncorrectEmailException;
 import com.rstep.user_service.exception.IncorrectUsernameException;
@@ -27,25 +28,25 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
     private final JWTService jwtService;
 
-    public UserRegistryDto registerUser(UserRegistryDto userRegistryDto) {
+    public UserRegistrationResponse registerUser(UserRegistrationRequest request) {
 
-        if (userRepository.existsByUsername(userRegistryDto.username())) {
+        if (userRepository.existsByUsername(request.username())) {
             log.error("Trying to register user with existing username");
             throw new IncorrectUsernameException("This username already registered, please try again.");
         }
 
-        if (userRepository.existsByEmail(userRegistryDto.email())) {
+        if (userRepository.existsByEmail(request.email())) {
             log.error("Trying to register user with existing email");
             throw new IncorrectEmailException("This email already registered, please try again.");
         }
 
         User user = new User();
-        user.setUsername(userRegistryDto.username());
-        user.setEmail(userRegistryDto.email());
-        user.setPassword(passwordEncoder.encode(userRegistryDto.password()));
+        user.setUsername(request.username());
+        user.setEmail(request.email());
+        user.setPassword(passwordEncoder.encode(request.password()));
 
         log.info("Perform user registration");
-        return UserRegistryDto.from(userRepository.save(user));
+        return UserRegistrationResponse.from(userRepository.save(user));
     }
 
     public String verify(UserCredentialDto userCredential) {

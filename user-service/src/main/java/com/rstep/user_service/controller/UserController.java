@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rstep.user_service.dto.ErrorResponse;
-import com.rstep.user_service.dto.JWTAuthenticationResponse;
-import com.rstep.user_service.dto.UserCredentialDto;
-import com.rstep.user_service.dto.UserRegistryDto;
+import com.rstep.user_service.dto.auth.JWTAuthenticationResponse;
+import com.rstep.user_service.dto.auth.UserCredentialDto;
+import com.rstep.user_service.dto.auth.UserRegistrationRequest;
 import com.rstep.user_service.exception.AuthenticationFailedException;
 import com.rstep.user_service.service.UserService;
 
@@ -27,9 +27,14 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping(value = "/register")
-    public ResponseEntity<UserRegistryDto> createUser(@RequestBody UserRegistryDto request) {
-        log.info("Creating user with {}", request.toString());
-        return ResponseEntity.ok(userService.registerUser(request));
+    public ResponseEntity<?> createUser(@RequestBody UserRegistrationRequest request) {
+        try {
+            log.info("Creating user with {}", request.toString());
+            return ResponseEntity.ok(userService.registerUser(request));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(new ErrorResponse("Failed to sign up", e.getMessage()));
+        }
     }
 
     @PostMapping(value = "/login")
@@ -41,7 +46,7 @@ public class UserController {
             return ResponseEntity.ok(response);
         } catch (AuthenticationFailedException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new ErrorResponse("Sign in failed", e.getMessage()));
+                    .body(new ErrorResponse("Failed to sign in", e.getMessage()));
         }
     }
 
