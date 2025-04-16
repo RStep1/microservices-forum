@@ -9,6 +9,8 @@ import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.rstep.user_service.model.User;
+
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -26,9 +28,10 @@ public class JWTService {
         this.expiration = expiration;
     }
 
-    public String generateToken(String username) {
+    public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
-        return buildToken(claims, username);
+        claims.put("user_id", user.getId());
+        return buildToken(claims, user.getUsername());
     }
 
     private String buildToken(Map<String, Object> extraClaims, String username) {

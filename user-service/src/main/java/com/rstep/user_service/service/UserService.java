@@ -2,6 +2,8 @@ package com.rstep.user_service.service;
 
 import java.util.List;
 
+import javax.security.sasl.AuthenticationException;
+
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -65,7 +67,11 @@ public class UserService {
             authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(userCredential.username(), userCredential.password())
             );
-            return jwtService.generateToken(userCredential.username());
+
+            User user = userRepository.findByUsername(userCredential.username())
+                .orElseThrow(() -> new AuthenticationException("User not found"));
+
+            return jwtService.generateToken(user);
 
         } catch (BadCredentialsException e) {
             throw new AuthenticationFailedException("Invalid credentials");
