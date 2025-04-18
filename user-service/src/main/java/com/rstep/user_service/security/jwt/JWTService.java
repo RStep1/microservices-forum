@@ -47,14 +47,13 @@ public class JWTService {
 
     public boolean validateJwtToken(String jwt) {
         try {
-            Jwts.parser()
+            return Jwts.parser()
                 .verifyWith(secretKey)
                 .build()
                 .parseSignedClaims(jwt)
                 .getPayload()
                 .getExpiration()
                 .after(new Date());
-            return true;
         } catch (Exception e) {
             log.error("Invalid JWT: {}", e.getMessage());
             return false;
