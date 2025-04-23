@@ -21,7 +21,7 @@ public class PostService {
     
     public CRUDPostResponseDto createPost(CreatePostRequestDto request, String token) {
         Post post = new Post();
-        // post.setAuthorId(authorId);
+        post.setAuthorId(3L);
         post.setCreatedAt(LocalDateTime.now());
         post.setUpdatedAt(null);
         post.setTitle(request.title());

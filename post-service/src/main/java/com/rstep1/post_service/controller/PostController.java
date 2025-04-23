@@ -29,7 +29,7 @@ public class PostController {
     public ResponseEntity<CRUDPostResponseDto> createPost(
             @RequestBody CreatePostRequestDto request,
             @RequestHeader("Authorization") String token) {
-        
+        log.info("Token is {}", token);
         log.info("Creating post with {}", request.toString());
         return ResponseEntity.ok(postService.createPost(request, token));
     }
