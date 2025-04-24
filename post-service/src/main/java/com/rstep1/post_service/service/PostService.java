@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
 
+import com.rstep1.post_service.clients.UserServiceClient;
 import com.rstep1.post_service.dto.CRUDPostResponseDto;
 import com.rstep1.post_service.dto.CreatePostRequestDto;
 import com.rstep1.post_service.model.Post;
@@ -18,10 +19,14 @@ import lombok.extern.slf4j.Slf4j;
 public class PostService {
     
     private final PostRepository postRepository;
+    private final UserServiceClient userServiceClient;
     
     public CRUDPostResponseDto createPost(CreatePostRequestDto request, String token) {
+
+        Long authorId = userServiceClient.validateToken(token).getBody();
+
         Post post = new Post();
-        post.setAuthorId(3L);
+        post.setAuthorId(authorId);
         post.setCreatedAt(LocalDateTime.now());
         post.setUpdatedAt(null);
         post.setTitle(request.title());
