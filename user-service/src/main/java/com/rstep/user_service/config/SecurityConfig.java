@@ -38,8 +38,8 @@ public class SecurityConfig {
         http
             .csrf(customizer -> customizer.disable())
             .authorizeHttpRequests(request -> request
-                .requestMatchers("/api/v1/user-service/register").permitAll()
-                .requestMatchers("/api/v1/user-service/login").permitAll()
+                .requestMatchers("/api/v1/user-service/auth/register").permitAll()
+                .requestMatchers("/api/v1/user-service/auth/login").permitAll()
                 .anyRequest().authenticated())
             .formLogin(form -> form.disable())
             .httpBasic(Customizer.withDefaults())
