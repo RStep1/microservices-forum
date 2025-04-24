@@ -17,6 +17,8 @@ import com.rstep.user_service.exception.AuthenticationFailedException;
 import com.rstep.user_service.security.jwt.JWTService;
 import com.rstep.user_service.service.UserService;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -53,9 +55,27 @@ public class AuthController {
     }
 
     @GetMapping(value = "/validate")
-    public ResponseEntity<Long> validateJwtToken(@RequestHeader("Authorization") String headerAuth) {
-        log.debug("Trying to validate token {}", headerAuth);
-        String token = jwtService.parseTokenFromHeader(headerAuth);
-        return ResponseEntity.ok(jwtService.getUserIdFromToken(token));
+    public ResponseEntity<?> validateJwtToken(@RequestHeader("Authorization") String headerAuth) {
+        try {
+            log.debug("Trying to validate token {}", headerAuth);
+            String token = jwtService.parseTokenFromHeader(headerAuth);
+            return ResponseEntity.ok(jwtService.getUserIdFromToken(token));
+        } catch (IllegalArgumentException e) {
+            log.warn("Invalid token format: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ErrorResponse("Invalid token format", e.getMessage()));
+        } catch (ExpiredJwtException e) {
+            log.warn("Token expired: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ErrorResponse("Token expired", e.getMessage()));
+        } catch (JwtException e) {
+            log.warn("Token validation failed: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ErrorResponse("Invalid token", e.getMessage()));
+        } catch (Exception e) {
+            log.error("Unexpected error during token validation", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorResponse("Internal server error", e.getMessage()));
+        }
     }
 }
