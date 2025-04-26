@@ -3,7 +3,7 @@ package com.rstep1.post_service.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.rstep1.post_service.clients.UserServiceErrorDecoder;
+import com.rstep1.post_service.feign.UserServiceErrorDecoder;
 
 import feign.codec.ErrorDecoder;
 

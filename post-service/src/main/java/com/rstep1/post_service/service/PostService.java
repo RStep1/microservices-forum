@@ -6,7 +6,6 @@ import org.hibernate.service.spi.ServiceException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.rstep1.common_lib.dto.ErrorResponse;
 import com.rstep1.post_service.clients.UserServiceClient;
 import com.rstep1.post_service.dto.CRUDPostResponseDto;
 import com.rstep1.post_service.dto.CreatePostRequestDto;
@@ -14,7 +13,6 @@ import com.rstep1.post_service.exception.UnauthorizedException;
 import com.rstep1.post_service.model.Post;
 import com.rstep1.post_service.repository.PostRepository;
 
-import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

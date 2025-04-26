@@ -1,4 +1,4 @@
-package com.rstep1.post_service.clients;
+package com.rstep1.post_service.feign;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rstep1.common_lib.dto.ErrorResponse;
