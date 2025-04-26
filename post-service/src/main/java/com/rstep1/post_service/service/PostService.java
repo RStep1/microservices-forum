@@ -1,10 +1,12 @@
 package com.rstep1.post_service.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.rstep1.post_service.clients.UserServiceClient;
 import com.rstep1.post_service.dto.CRUDPostResponseDto;
@@ -13,6 +15,7 @@ import com.rstep1.post_service.exception.UnauthorizedException;
 import com.rstep1.post_service.model.Post;
 import com.rstep1.post_service.repository.PostRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,9 +27,9 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserServiceClient userServiceClient;
     
-    public CRUDPostResponseDto createPost(CreatePostRequestDto request, String token) {
+    public CRUDPostResponseDto createPost(CreatePostRequestDto request, String headerAuth) {
         try {
-            ResponseEntity<?> response = userServiceClient.validateToken(token);
+            ResponseEntity<?> response = userServiceClient.validateToken(headerAuth);
 
             Long authorId = (Long) response.getBody();
                 
@@ -47,8 +50,20 @@ public class PostService {
         }
     }
 
-    public CRUDPostResponseDto readPost(Long id) {
+    public CRUDPostResponseDto readPost(Long id, String headerAuth) {
+        userServiceClient.validateToken(headerAuth);
+        Post post = postRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        return CRUDPostResponseDto.from(post);
+    }
 
-        return null;
+    @Transactional(readOnly = true)
+    public List<CRUDPostResponseDto> readAllPostsByUser(Long authorId, String headerAuth) {
+        userServiceClient.validateToken(headerAuth);
+        return postRepository.findByAuthorId(authorId).stream().map(post -> CRUDPostResponseDto.from(post)).toList();
+    }
+
+    public List<CRUDPostResponseDto> readAllPosts(String headerAuth) {
+        userServiceClient.validateToken(headerAuth);
+        return postRepository.findAll().stream().map(post -> CRUDPostResponseDto.from(post)).toList();
     }
 }

@@ -6,6 +6,7 @@ import com.rstep1.post_service.model.Post;
 
 public record CRUDPostResponseDto(
     Long id,
+    // String authorUsername,
     LocalDateTime createdAt,
     LocalDateTime updatedAt,
     String title,
