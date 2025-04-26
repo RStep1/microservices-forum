@@ -59,11 +59,11 @@ public class PostService {
     @Transactional(readOnly = true)
     public List<CRUDPostResponseDto> readAllPostsByUser(Long authorId, String headerAuth) {
         userServiceClient.validateToken(headerAuth);
-        return postRepository.findByAuthorId(authorId).stream().map(post -> CRUDPostResponseDto.from(post)).toList();
+        return postRepository.findByAuthorId(authorId).stream().map(CRUDPostResponseDto::from).toList();
     }
 
     public List<CRUDPostResponseDto> readAllPosts(String headerAuth) {
         userServiceClient.validateToken(headerAuth);
-        return postRepository.findAll().stream().map(post -> CRUDPostResponseDto.from(post)).toList();
+        return postRepository.findAll().stream().map(CRUDPostResponseDto::from).toList();
     }
 }

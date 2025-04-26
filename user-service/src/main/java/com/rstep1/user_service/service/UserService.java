@@ -86,7 +86,7 @@ public class UserService {
     }
 
     public List<UserDto> readUsers() {
-        return userRepository.findAll().stream().map(user -> UserDto.from(user)).toList();
+        return userRepository.findAll().stream().map(UserDto::from).toList();
     }
 
     public UserDto updateUserProfile(Long id, UpdateUserProfileRequest request) {
