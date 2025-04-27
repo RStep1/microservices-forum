@@ -83,4 +83,17 @@ public class PostService {
         
         return CRUDPostResponseDto.from(postRepository.save(post));
     }
+
+    public void deletePost(Long id, String headerAuth) {
+        ResponseEntity<?> response = userServiceClient.validateToken(headerAuth);
+        Long authorId = (Long) response.getBody();
+
+        Post post = postRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        if (post.getAuthorId() != authorId) {
+            log.info("Client is trying to delete not his own post");
+            throw new NotPostOwnerException("Only the owner of the post can delete it.");
+        }
+
+        postRepository.delete(post);
+    }
 }

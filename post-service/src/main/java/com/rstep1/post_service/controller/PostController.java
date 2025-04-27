@@ -3,6 +3,7 @@ package com.rstep1.post_service.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -69,5 +70,14 @@ public class PostController {
         
         log.info("Updating post with id {} with {}", id, request);
         return ResponseEntity.ok(postService.updatePost(id, request, headerAuth));
+    }
+
+    @DeleteMapping(value = "/posts/{id}")
+    public ResponseEntity<Void> deletePost(
+            @PathVariable("id") Long id,
+            @RequestHeader("Authorization") String headerAuth) {
+        log.info("Deleting post with id {}", id);
+        postService.deletePost(id, headerAuth);
+        return ResponseEntity.noContent().build();
     }
 }
