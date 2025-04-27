@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rstep1.post_service.dto.CreatePostRequestDto;
+import com.rstep1.post_service.dto.UpdatePostRequestDto;
 import com.rstep1.post_service.dto.CRUDPostResponseDto;
 import com.rstep1.post_service.service.PostService;
 
-import feign.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -56,9 +56,18 @@ public class PostController {
             log.info("Reading all posts by user with user_id {}", authorId);
             return ResponseEntity.ok(postService.readAllPostsByUser(authorId, headerAuth));
         }
-        
+
         log.info("Reading all posts");
         return ResponseEntity.ok(postService.readAllPosts(headerAuth));
     }
 
+    @PutMapping(value = "/posts/{id}")
+    public ResponseEntity<CRUDPostResponseDto> updatePost(
+            @PathVariable("id") Long id,
+            @RequestBody UpdatePostRequestDto request,
+            @RequestHeader("Authorization") String headerAuth) {
+        
+        log.info("Updating post with id {} with {}", id, request);
+        return ResponseEntity.ok(postService.updatePost(id, request, headerAuth));
+    }
 }

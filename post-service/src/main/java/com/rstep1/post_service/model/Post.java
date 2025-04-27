@@ -33,7 +33,7 @@ public class Post {
     
     private LocalDateTime updatedAt;
     
-    @Column(length = 150, nullable = false)
+    @Column(length = 150, nullable = false, updatable = false)
     private String title;
 
     @Lob
