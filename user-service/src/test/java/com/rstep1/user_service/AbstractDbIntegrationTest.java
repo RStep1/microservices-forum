@@ -7,10 +7,9 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
-public abstract class AbstractIntegrationTest {
+public abstract class AbstractDbIntegrationTest {
     
     @Container
-    @SuppressWarnings("resource")
     private static final PostgreSQLContainer<?> postgresqlContainer = 
         new PostgreSQLContainer<>("postgres:15-alpine")
             .withDatabaseName("userservicetestdb")

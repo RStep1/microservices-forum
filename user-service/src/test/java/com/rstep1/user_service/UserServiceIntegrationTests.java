@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rstep1.user_service.dto.auth.UserCredentialDto;
 import com.rstep1.user_service.dto.auth.UserRegistrationRequest;
 import com.rstep1.user_service.repository.UserRepository;
 
@@ -18,7 +19,7 @@ import jakarta.transaction.Transactional;
 @SpringBootTest
 @Transactional
 @AutoConfigureMockMvc
-public class UserServiceIntegrationTests extends AbstractIntegrationTest {
+public class UserServiceIntegrationTests extends AbstractDbIntegrationTest {
     
     @Autowired
     private UserRepository userRepository;
@@ -36,13 +37,30 @@ public class UserServiceIntegrationTests extends AbstractIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/user-service/auth/register")
             .contentType(MediaType.APPLICATION_JSON)
             .content(requestString))
-            .andExpect(MockMvcResultMatchers.status().isCreated());
+            .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
     }
 
     private UserRegistrationRequest getUserRegistrationRequest() {
         return UserRegistrationRequest.builder()
             .username("usernametest")
             .email("emailtest")
-            .password("passwordtest").build();
+            .password("passwordtest")
+            .build();
+    }
+
+    @Test void shouldCreateJwtToken() throws Exception {
+        UserCredentialDto userCredentialDto = getUserCredentialDto();
+        String requestString = objectMapper.writeValueAsString(userCredentialDto);
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/user-service/auth/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestString))
+            .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
+    }
+
+    private UserCredentialDto getUserCredentialDto() {
+        return UserCredentialDto.builder()
+            .username("usernametest")
+            .password("passwordtest")
+            .build();
     }
 }
