@@ -20,7 +20,7 @@ import com.rstep1.user_service.util.TestUserUtils;
 
 @SpringBootTest
 @Transactional
-public class UserServiceDatabaseIntegrationTest extends AbstractDbIntegrationTest {
+public class UserServiceDatabaseIntegrationTest extends AbstractDatabaseIntegrationTest {
     
     @Autowired
     private UserService userService;

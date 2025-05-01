@@ -20,7 +20,7 @@ import jakarta.transaction.Transactional;
 @SpringBootTest
 @Transactional
 @AutoConfigureMockMvc
-public class UserServiceApiE2ETest extends AbstractDbIntegrationTest {
+public class UserServiceApiE2ETest extends AbstractDatabaseIntegrationTest {
     
     @Autowired
     private UserRepository userRepository;
