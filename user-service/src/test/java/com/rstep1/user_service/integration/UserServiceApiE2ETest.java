@@ -1,4 +1,4 @@
-package com.rstep1.user_service;
+package com.rstep1.user_service.integration;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

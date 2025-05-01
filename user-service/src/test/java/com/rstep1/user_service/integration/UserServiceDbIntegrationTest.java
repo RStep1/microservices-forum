@@ -1,4 +1,4 @@
-package com.rstep1.user_service;
+package com.rstep1.user_service.integration;
 
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -71,5 +71,10 @@ public class UserServiceDbIntegrationTest extends AbstractDbIntegrationTest {
         assertEquals(id, foundUserDto.id(), "Returned DTO ID should be saved user ID");
         assertEquals(username, foundUserDto.username(), "Username should match");
         assertEquals(email, foundUserDto.email(), "Email should match");
+    }
+
+    @Test
+    public void whenReadAllUsers_thenReturnUserList() {
+        
     }
 }

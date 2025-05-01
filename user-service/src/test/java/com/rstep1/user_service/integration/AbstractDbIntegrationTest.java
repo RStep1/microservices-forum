@@ -1,4 +1,4 @@
-package com.rstep1.user_service;
+package com.rstep1.user_service.integration;
 
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
