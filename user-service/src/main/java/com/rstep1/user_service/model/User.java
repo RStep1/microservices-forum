@@ -1,5 +1,6 @@
 package com.rstep1.user_service.model;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import jakarta.persistence.Table;
