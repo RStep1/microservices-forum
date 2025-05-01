@@ -2,6 +2,7 @@ package com.rstep1.user_service.integration;
 
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
@@ -106,6 +107,24 @@ public class UserServiceDatabaseIntegrationTest extends AbstractDatabaseIntegrat
 
         assertThrows(EntityNotFoundException.class, () -> {
             userService.updateUserProfile(nonExistingId, updateRequest);
+        });
+    }
+
+    @Test
+    public void givenExistingUserId_whenDeleteUser_thenRemoveUserFromDatabase() {
+        User user = userRepository.save(TestUserUtils.createTestUser());
+
+        userService.deleteUser(user.getId());
+
+        assertFalse(userRepository.existsById(user.getId()), "User should be deleted from database");
+    }
+
+    @Test
+    public void givenNonExistingUserId_whenDeleteUser_thenThrowEntityNotFoundException() {
+        Long nonExistingId = 999L;
+
+        assertThrows(EntityNotFoundException.class, () -> {
+            userService.deleteUser(nonExistingId);
         });
     }
 }
