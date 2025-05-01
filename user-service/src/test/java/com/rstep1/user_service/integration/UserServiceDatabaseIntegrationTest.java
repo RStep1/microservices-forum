@@ -3,6 +3,9 @@ package com.rstep1.user_service.integration;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,10 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.rstep1.user_service.dto.UserDto;
 import com.rstep1.user_service.dto.auth.UserRegistrationRequest;
+import com.rstep1.user_service.model.User;
 import com.rstep1.user_service.repository.UserRepository;
 import com.rstep1.user_service.service.UserService;
 import com.rstep1.user_service.util.TestUserUtils;
-import com.rstep1.user_service.model.User;
 
 @SpringBootTest
 @Transactional
@@ -53,7 +56,16 @@ public class UserServiceDatabaseIntegrationTest extends AbstractDbIntegrationTes
     }
 
     @Test
-    public void whenReadAllUsers_thenReturnUserList() {
+    public void whenReadAllUsers_thenReturnCorrectNumberOfUsers() {
+        User testUser1 = TestUserUtils.createTestUser();
+        User testUser2 = TestUserUtils.createTestUser();
+        User testUser3 = TestUserUtils.createTestUser();
+        List<User> testUsers = Arrays.asList(testUser1, testUser2, testUser3);
+
+        userRepository.saveAll(testUsers);
+
+        List<UserDto> foundUsersDto = userService.readUsers();
         
+        assertEquals(testUsers.size(), foundUsersDto.size());
     }
 }
