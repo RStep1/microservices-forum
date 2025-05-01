@@ -2,6 +2,7 @@ package com.rstep1.user_service.integration;
 
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,12 +12,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.rstep1.user_service.dto.UpdateUserProfileRequest;
 import com.rstep1.user_service.dto.UserDto;
 import com.rstep1.user_service.dto.auth.UserRegistrationRequest;
+import com.rstep1.user_service.exception.EmailExistsException;
 import com.rstep1.user_service.model.User;
 import com.rstep1.user_service.repository.UserRepository;
 import com.rstep1.user_service.service.UserService;
 import com.rstep1.user_service.util.TestUserUtils;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @SpringBootTest
 @Transactional
@@ -67,5 +72,40 @@ public class UserServiceDatabaseIntegrationTest extends AbstractDatabaseIntegrat
         List<UserDto> foundUsersDto = userService.readUsers();
         
         assertEquals(testUsers.size(), foundUsersDto.size());
+    }
+
+    @Test
+    public void givenValidUpdateRequest_whenUpdateUserProfile_thenUpdateUserInDatabase() {
+        User existingUser = userRepository.save(TestUserUtils.createTestUser());
+        String newEmail = "new.email@example.com";
+        UpdateUserProfileRequest updateRequest = new UpdateUserProfileRequest(newEmail);
+
+        UserDto updatedUser = userService.updateUserProfile(existingUser.getId(), updateRequest);
+
+        assertEquals(newEmail, updatedUser.email(), "Email should be updated");
+
+        User dbUser = userRepository.findById(existingUser.getId()).orElseThrow();
+        assertEquals(newEmail, dbUser.getEmail(), "Database should reflect the email update");
+    }
+
+    @Test
+    public void givenDuplicateEmail_whenUpdateUserProfile_thenThrowEmailExistsException() {
+        User user1 = userRepository.save(TestUserUtils.createTestUser());
+        User user2 = userRepository.save(TestUserUtils.createTestUser());
+        UpdateUserProfileRequest updateRequest = new UpdateUserProfileRequest(user2.getEmail());
+
+        assertThrows(EmailExistsException.class, () -> {
+            userService.updateUserProfile(user1.getId(), updateRequest);
+        });
+    }
+
+    @Test
+    public void givenNonExistingUserId_whenUpdateUserProfile_thenThrowEntityNotFoundException() {
+        Long nonExistingId = 999L;
+        UpdateUserProfileRequest updateRequest = new UpdateUserProfileRequest("new.email@example.com");
+
+        assertThrows(EntityNotFoundException.class, () -> {
+            userService.updateUserProfile(nonExistingId, updateRequest);
+        });
     }
 }
