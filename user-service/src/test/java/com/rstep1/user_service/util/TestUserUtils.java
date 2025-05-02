@@ -1,6 +1,7 @@
 package com.rstep1.user_service.util;
 
 import com.github.javafaker.Faker;
+import com.rstep1.user_service.dto.auth.UserCredentialDto;
 import com.rstep1.user_service.dto.auth.UserRegistrationRequest;
 import com.rstep1.user_service.model.User;
 
@@ -22,5 +23,20 @@ public class TestUserUtils {
                 .email(faker.internet().emailAddress())
                 .password(faker.internet().password())
                 .build();
+    }
+
+    public static UserRegistrationRequest getUserRegistrationRequest() {
+        return UserRegistrationRequest.builder()
+            .username(faker.name().username())
+            .email(faker.internet().emailAddress())
+            .password(faker.internet().password())
+            .build();
+    }
+
+    public static UserCredentialDto getUserCredentialDto() {
+        return UserCredentialDto.builder()
+            .username("usernametest")
+            .password("passwordtest")
+            .build();
     }
 }
