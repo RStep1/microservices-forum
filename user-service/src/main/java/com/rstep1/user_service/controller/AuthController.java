@@ -15,8 +15,7 @@ import com.rstep1.user_service.dto.auth.UserCredentialDto;
 import com.rstep1.user_service.dto.auth.UserRegistrationRequest;
 import com.rstep1.user_service.exception.AuthenticationFailedException;
 import com.rstep1.user_service.security.jwt.JWTService;
-import com.rstep1.user_service.service.UserService;
-
+import com.rstep1.user_service.service.AuthService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
@@ -28,13 +27,13 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class AuthController {
     private final JWTService jwtService;
-    private final UserService userService;
+    private final AuthService authService;
 
     @PostMapping(value = "/register")
     public ResponseEntity<?> createUser(@RequestBody UserRegistrationRequest request) {
         try {
             log.info("Creating user with {}", request.toString());
-            return ResponseEntity.ok(userService.registerUser(request));
+            return ResponseEntity.ok(authService.registerUser(request));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(new ErrorResponse("Failed to sign up", e.getMessage()));
@@ -45,7 +44,7 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody UserCredentialDto request) {
         try {
             log.info("Authenticating user with {}", request.toString());
-            String token = userService.verify(request);
+            String token = authService.verify(request);
             JWTAuthenticationResponse response = new JWTAuthenticationResponse(token);
             return ResponseEntity.ok(response);
         } catch (AuthenticationFailedException e) {
