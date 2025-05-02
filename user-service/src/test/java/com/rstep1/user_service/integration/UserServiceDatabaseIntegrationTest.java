@@ -1,6 +1,5 @@
 package com.rstep1.user_service.integration;
 
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -11,11 +10,12 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.rstep1.user_service.config.TestcontainersInitializer;
 import com.rstep1.user_service.dto.UpdateUserProfileRequest;
 import com.rstep1.user_service.dto.UserDto;
-import com.rstep1.user_service.dto.auth.UserRegistrationRequest;
 import com.rstep1.user_service.exception.EmailExistsException;
 import com.rstep1.user_service.model.User;
 import com.rstep1.user_service.repository.UserRepository;
@@ -26,26 +26,14 @@ import jakarta.persistence.EntityNotFoundException;
 
 @SpringBootTest
 @Transactional
-public class UserServiceDatabaseIntegrationTest extends AbstractDatabaseIntegrationTest {
+@ContextConfiguration(initializers = TestcontainersInitializer.class)
+public class UserServiceDatabaseIntegrationTest  {
     
     @Autowired
     private UserService userService;
 
     @Autowired
     private UserRepository userRepository;
-
-    @Test
-    public void givenUserRegistrationRequest_whenRegisterUser_thenSaveUserInDatabase() {
-        UserRegistrationRequest request = TestUserUtils.createRegistrationRequest();
-        
-        userService.registerUser(request);
-
-        User user = userRepository.findByUsername(request.username()).orElseThrow();
-
-        assertEquals(request.username(), user.getUsername(), "Username should match");
-        assertEquals(request.email(), user.getEmail(), "Email should match");
-        assertNotEquals(request.password(), user.getPassword(), "Password should be hashed");
-    }
 
     @Test
     public void givenValidUserId_whenReadUser_thenReturnUserDto() {

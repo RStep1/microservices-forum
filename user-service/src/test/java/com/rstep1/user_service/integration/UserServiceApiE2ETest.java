@@ -6,11 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rstep1.user_service.config.TestcontainersInitializer;
 import com.rstep1.user_service.dto.auth.UserCredentialDto;
 import com.rstep1.user_service.dto.auth.UserRegistrationRequest;
 import com.rstep1.user_service.repository.UserRepository;
@@ -21,7 +23,8 @@ import jakarta.transaction.Transactional;
 @SpringBootTest
 @Transactional
 @AutoConfigureMockMvc
-public class UserServiceApiE2ETest extends AbstractDatabaseIntegrationTest {
+@ContextConfiguration(initializers = TestcontainersInitializer.class)
+public class UserServiceApiE2ETest {
     
     @Autowired
     private UserRepository userRepository;
