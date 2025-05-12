@@ -3,7 +3,8 @@ package com.rstep1.user_service.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.rstep1.user_service.dto.UpdateUserProfileRequest;
 import com.rstep1.user_service.dto.UserDto;
+import com.rstep1.user_service.security.auth.UserPrincipal;
 import com.rstep1.user_service.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -40,18 +42,29 @@ public class UserController {
     }
 
     @PutMapping(value = "/users/{id}")
-    @PreAuthorize("#id == principal.id")
+    // @PreAuthorize("#id == principal.id")
     public ResponseEntity<UserDto> updateUserProfile(
-                @PathVariable("id") Long id,
-                @RequestBody UpdateUserProfileRequest request
-            ) {
-        log.info("Updating user profile with {}", request.toString());
+            @PathVariable("id") Long id,
+            @RequestBody UpdateUserProfileRequest request,
+            Authentication authentication
+    ) {
+        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+    
+        if (!principal.getId().equals(id)) {
+            throw new AccessDeniedException("You can only update your own profile");
+        }
         return ResponseEntity.ok(userService.updateUserProfile(id, request));
     }
 
     @DeleteMapping(value = "/users/{id}")
-    @PreAuthorize("#id == principal.id")
-    public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id) {
+    // @PreAuthorize("#id == principal.id")
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id, Authentication authentication) {
+        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+    
+        if (!principal.getId().equals(id)) {
+            throw new AccessDeniedException("You can only delete your own profile");
+        }
+
         log.info("Deleting user profile with id {}", id);
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
