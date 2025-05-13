@@ -6,37 +6,55 @@ import com.rstep1.user_service.dto.auth.UserRegistrationRequest;
 import com.rstep1.user_service.model.User;
 
 public class TestUserUtils {
-
     private static final Faker faker = new Faker();
-
-    public static User createTestUser() {
+    
+    public static User createTestUser(String username, String email, String password) {
         User user = new User();
-        user.setUsername(faker.name().username());
-        user.setEmail(faker.internet().emailAddress());
-        user.setPassword(faker.internet().password());
+        user.setUsername(username);
+        user.setEmail(email);
+        user.setPassword(password);
         return user;
     }
 
-    public static UserRegistrationRequest createRegistrationRequest() {
-        return UserRegistrationRequest.builder()
-                .username(faker.name().username())
-                .email(faker.internet().emailAddress())
-                .password(faker.internet().password())
-                .build();
+    public static User createRandomTestUser() {
+        return createTestUser(
+            faker.name().username(),
+            faker.internet().emailAddress(),
+            faker.internet().password()
+        );
     }
 
-    public static UserRegistrationRequest getUserRegistrationRequest() {
+    public static UserRegistrationRequest createRegistrationRequest(
+        String username, 
+        String email, 
+        String password
+    ) {
         return UserRegistrationRequest.builder()
-            .username(faker.name().username())
-            .email(faker.internet().emailAddress())
-            .password(faker.internet().password())
+            .username(username)
+            .email(email)
+            .password(password)
             .build();
     }
 
-    public static UserCredentialDto getUserCredentialDto() {
+    public static UserRegistrationRequest createRandomRegistrationRequest() {
+        return createRegistrationRequest(
+            faker.name().username(),
+            faker.internet().emailAddress(),
+            faker.internet().password()
+        );
+    }
+
+    public static UserCredentialDto createUserCredentialDto(String username, String password) {
         return UserCredentialDto.builder()
-            .username("usernametest")
-            .password("passwordtest")
+            .username(username)
+            .password(password)
             .build();
+    }
+
+    public static UserCredentialDto createRandomUserCredentialDto() {
+        return createUserCredentialDto(
+            faker.name().username(),
+            faker.internet().password()
+        );
     }
 }

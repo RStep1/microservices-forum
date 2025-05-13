@@ -37,7 +37,7 @@ public class UserServiceDatabaseIntegrationTest  {
 
     @Test
     public void givenValidUserId_whenReadUser_thenReturnUserDto() {
-        User testUser = TestUserUtils.createTestUser();
+        User testUser = TestUserUtils.createRandomTestUser();
 
         User savedUser = userRepository.save(testUser);
         Long id = savedUser.getId();
@@ -51,9 +51,9 @@ public class UserServiceDatabaseIntegrationTest  {
 
     @Test
     public void whenReadAllUsers_thenReturnCorrectNumberOfUsers() {
-        User testUser1 = TestUserUtils.createTestUser();
-        User testUser2 = TestUserUtils.createTestUser();
-        User testUser3 = TestUserUtils.createTestUser();
+        User testUser1 = TestUserUtils.createRandomTestUser();
+        User testUser2 = TestUserUtils.createRandomTestUser();
+        User testUser3 = TestUserUtils.createRandomTestUser();
         List<User> testUsers = Arrays.asList(testUser1, testUser2, testUser3);
 
         userRepository.saveAll(testUsers);
@@ -65,7 +65,7 @@ public class UserServiceDatabaseIntegrationTest  {
 
     @Test
     public void givenValidUpdateRequest_whenUpdateUserProfile_thenUpdateUserInDatabase() {
-        User existingUser = userRepository.save(TestUserUtils.createTestUser());
+        User existingUser = userRepository.save(TestUserUtils.createRandomTestUser());
         String newEmail = "new.email@example.com";
         UpdateUserProfileRequest updateRequest = new UpdateUserProfileRequest(newEmail);
 
@@ -79,8 +79,8 @@ public class UserServiceDatabaseIntegrationTest  {
 
     @Test
     public void givenDuplicateEmail_whenUpdateUserProfile_thenThrowEmailExistsException() {
-        User user1 = userRepository.save(TestUserUtils.createTestUser());
-        User user2 = userRepository.save(TestUserUtils.createTestUser());
+        User user1 = userRepository.save(TestUserUtils.createRandomTestUser());
+        User user2 = userRepository.save(TestUserUtils.createRandomTestUser());
         UpdateUserProfileRequest updateRequest = new UpdateUserProfileRequest(user2.getEmail());
 
         assertThrows(EmailExistsException.class, () -> {
@@ -100,7 +100,7 @@ public class UserServiceDatabaseIntegrationTest  {
 
     @Test
     public void givenExistingUserId_whenDeleteUser_thenRemoveUserFromDatabase() {
-        User user = userRepository.save(TestUserUtils.createTestUser());
+        User user = userRepository.save(TestUserUtils.createRandomTestUser());
 
         userService.deleteUser(user.getId());
 

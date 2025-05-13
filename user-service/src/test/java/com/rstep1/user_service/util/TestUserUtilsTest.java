@@ -10,7 +10,7 @@ class TestUserUtilsTest {
 
     @Test
     void whenCreateTestUser_thenReturnUserWithAllFieldsSet() {
-        User user = TestUserUtils.createTestUser();
+        User user = TestUserUtils.createRandomTestUser();
         
         assertNotNull(user);
         assertNotNull(user.getUsername());
@@ -20,7 +20,7 @@ class TestUserUtilsTest {
 
     @Test
     void whenCreateRegistrationRequest_thenReturnRequestWithAllFieldsSet() {
-        UserRegistrationRequest request = TestUserUtils.createRegistrationRequest();
+        UserRegistrationRequest request = TestUserUtils.createRandomRegistrationRequest();
         
         assertNotNull(request);
         assertNotNull(request.username());
@@ -30,8 +30,8 @@ class TestUserUtilsTest {
 
     @Test
     void whenCreateTestUser_thenGenerateDifferentValuesEachTime() {
-        User user1 = TestUserUtils.createTestUser();
-        User user2 = TestUserUtils.createTestUser();
+        User user1 = TestUserUtils.createRandomTestUser();
+        User user2 = TestUserUtils.createRandomTestUser();
         
         assertNotEquals(user1.getUsername(), user2.getUsername());
         assertNotEquals(user1.getEmail(), user2.getEmail());
@@ -40,8 +40,8 @@ class TestUserUtilsTest {
 
     @Test
     void whenRegistrationRequest_thenGenerateDifferentValuesEachTime() {
-        UserRegistrationRequest request1 = TestUserUtils.createRegistrationRequest();
-        UserRegistrationRequest request2 = TestUserUtils.createRegistrationRequest();
+        UserRegistrationRequest request1 = TestUserUtils.createRandomRegistrationRequest();
+        UserRegistrationRequest request2 = TestUserUtils.createRandomRegistrationRequest();
         
         assertNotEquals(request1.username(), request2.username());
         assertNotEquals(request1.email(), request2.email());
