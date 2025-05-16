@@ -134,8 +134,7 @@ public class UserServiceApiE2ETest {
     @Test
     public void givenValidUpdateRequest_whenUpdateProfile_thenReturnUpdatedUser() throws Exception {
         String newEmail = "updated_" + testUser.email();
-        // String requestJson = "{ \"email\": \"" + newEmail + "\" }";
-        String requestJson = objectMapper.writeValueAsString(newEmail);
+        String requestJson = "{ \"email\": \"" + newEmail + "\" }";
         
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/user-service/users/{id}", userId)
                 .header("Authorization", "Bearer " + authToken)
