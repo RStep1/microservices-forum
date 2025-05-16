@@ -3,11 +3,11 @@ package com.rstep1.post_service.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.hibernate.service.spi.ServiceException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.rstep1.common_lib.exception.ServiceException;
 import com.rstep1.post_service.clients.UserServiceClient;
 import com.rstep1.post_service.dto.CRUDPostResponseDto;
 import com.rstep1.post_service.dto.CreatePostRequestDto;
